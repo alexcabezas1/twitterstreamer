@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Metamax - Updates Streaming</title>
+<style type="text/css">
+.update{
+	width: 500px;
+	height: 500px;
+	border: 1px solid red;
+	padding: 10px;
+}
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script>
+	var updates = [];
+	var prev_update = null;
+
+	var ws = new WebSocket("ws://{{ escape(domain) }}:8080/socket");
+
+    ws.onmessage = function(event) {
+    	var data = $.parseJSON(event.data);
+    	console.log(data);
+    	if (data.text){
+    		updates.push(data.text);
+    	}
+    };
+    var timer = window.setInterval(function(){
+        if (updates.length != 0){
+			if (prev_update){
+				prev_update.hide().remove();
+			}
+			prev_update = $('<div class="update"><p>'+updates.pop()+'</p></div>').hide();
+			$('body').html(prev_update);
+			prev_update.show();
+		}
+    }, 3600);
+</script>
+</head>
+<body>
+</body>
+</html>
