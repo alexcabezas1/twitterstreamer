@@ -42,15 +42,19 @@ class Publisher(object):
 
     def spread(self):
         global sockets
+        message = ""
+
         if self.last_published < len(self.updates):
             message = self.updates[self.last_published]
             self.last_published += 1
         else:
-            import random
-            message = self.updates[random.randint(0,len(self.updates)-1)]
+            if len(self.updates) != 0:
+                import random
+                message = self.updates[random.randint(0,len(self.updates)-1)]
 
-        for socket in sockets:
-            socket.write_message(message)
+        if message != "":
+            for socket in sockets:
+                socket.write_message(message)
 
 
 class IndexHandler(tornado.web.RequestHandler):
