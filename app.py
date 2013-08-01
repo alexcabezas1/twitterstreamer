@@ -18,6 +18,12 @@ define("debug", default=0, help="debug mode", type=int)
 sockets = list()
 streamer = None
 
+# Twitter Credentials 
+consumer_key = 'vcyB8y6pUXufytplpFuA'
+consumer_secret = '6hWOGaMeY6nQjMECFS6FR7sQRlNC0NVsGyAoI7oxP44'
+access_token = '68724842-kR2NdVzJUOWozhv4oyEOrlQLYUqHyscw6EcCILfvZ'
+access_token_secret = 'vsM2Ye7GMWqQNuHQeEUWB1eHNQKfXJz5zFmUKflt1g'
+
 def set_interval(func, sec):
     def func_wrapper():
         set_interval(func, sec)
@@ -81,10 +87,11 @@ class TwitterStreamer(object):
             for message in msg:
                 publisher.gossip(message)
         else:
-            twitter = OAuth1Session('vcyB8y6pUXufytplpFuA',
-                                    client_secret='6hWOGaMeY6nQjMECFS6FR7sQRlNC0NVsGyAoI7oxP44',
-                                    resource_owner_key='68724842-kR2NdVzJUOWozhv4oyEOrlQLYUqHyscw6EcCILfvZ',
-                                    resource_owner_secret='vsM2Ye7GMWqQNuHQeEUWB1eHNQKfXJz5zFmUKflt1g')
+            global consumer_key, consumer_secret, access_token, access_token_secret
+            twitter = OAuth1Session(consumer_key,
+                                    client_secret = consumer_secret,
+                                    resource_owner_key = access_token,
+                                    resource_owner_secret = access_token_secret)
             #url = 'https://api.twitter.com/1.1/statuses/home_timeline.json'
             url = 'https://userstream.twitter.com/1.1/user.json?stall_warnings=true' 
             r = twitter.get(url, stream = True)
