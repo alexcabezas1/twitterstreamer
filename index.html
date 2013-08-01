@@ -2,40 +2,64 @@
 <html>
 <head>
 <title>Metamax - Updates Streaming</title>
+<link href='http://fonts.googleapis.com/css?family=Abel' rel='stylesheet' type='text/css'>
 <style type="text/css">
-.update{
-	width: 500px;
-	height: 500px;
-	border: 1px solid red;
-	padding: 10px;
+body{
+    font-family: "Abel", sans-serif;;
+    font-size: 12px;
+    line-height: 18px;
+    color: #333;	
+}
+.update{	
+	position: absolute;
+	top: 130px;
+	left: 0;
+	width: 1840px;
+	height: 700px;
+	/*background-color: #FEF1D1;*/
+	margin: 0 auto;
+	text-align: center;
+	color: #828282;
+	font-size: 7.5em;
+	line-height: 1.2em;
+}
+.update p{
+	padding: 0 110px 0 110px;
+}
+.wrap-layout{
+	position: relative;
+	margin: 0 auto;
+	padding: 0;
+}
+#update-wrapper{
+	background: white url("/static/images/fondo-1.jpg") no-repeat center bottom;
+	width: 1920px;
+	height: 1080px;
 }
 </style>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script>
-	var updates = [];
-	var prev_update = null;
+	var $prev_update = null;
 
-	var ws = new WebSocket("ws://{{ escape(domain) }}:8080/socket");
+	var ws = new WebSocket("ws://{{ escape(domain) }}:{{ port }}/socket");
 
     ws.onmessage = function(event) {
     	var data = $.parseJSON(event.data);
     	console.log(data);
     	if (data.text){
-    		updates.push(data.text);
-    	}
-    };
-    var timer = window.setInterval(function(){
-        if (updates.length != 0){
-			if (prev_update){
-				prev_update.hide().remove();
+			if ($prev_update){
+				$prev_update.hide().remove();
 			}
-			prev_update = $('<div class="update"><p>'+updates.pop()+'</p></div>').hide();
-			$('body').html(prev_update);
-			prev_update.show();
-		}
-    }, 3600);
+			$prev_update = $('<div class="update"><p>'+data.text+'</p></div>').hide();
+			$('#update-wrapper').html($prev_update);
+			$prev_update.show();
+    	}
+    };    
 </script>
 </head>
 <body>
+	<div id="update-wrapper">
+		<!--div class="update"><p>Rosalind Elsie Franklin (25 July 1920 – 16 April 1958)[1] was a British biophysicist and X-ray crystallographer who made critical contributions to the understanding of the fine molecular structures of DNA, RNA, viruses, coal, and graphite.</p></div-->	
+	</div>
 </body>
 </html>
