@@ -43,12 +43,15 @@ class Publisher(object):
     def spread(self):
         global sockets
         if self.last_published < len(self.updates):
-            for socket in sockets:
-                if options.debug:
-                    socket.write_message({'text':self.updates[self.last_published]})
-                else:
-                    socket.write_message(self.updates[self.last_published])
-            self.last_published += 1       
+            message = self.updates[self.last_published]
+            self.last_published += 1
+        else:
+            import random
+            message = self.updates[random.randint(0,len(self.updates)-1)]
+
+        for socket in sockets:
+            socket.write_message(message)
+
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
@@ -85,7 +88,7 @@ class TwitterStreamer(object):
                 ,"Mering was an X-ray crystallographer who applied X-ray diffraction to the study of rayon and other amorphous substances, in contrast to the thousands of regular crystals that had been studied by this method for many years"]
 
             for message in msg:
-                publisher.gossip(message)
+                publisher.gossip({'text':message})
         else:
             global consumer_key, consumer_secret, access_token, access_token_secret
             twitter = OAuth1Session(consumer_key,
