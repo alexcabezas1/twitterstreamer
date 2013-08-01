@@ -33,9 +33,13 @@ def set_interval(func, sec):
     return t
 
 class Publisher(object):
-    def __init__(self):
+    def __init__(self, refresh = 3):
+        self.refresh = refresh
         self.updates = list()
         self.last_published = 0
+
+    def start(self):
+        set_interval(self.spread, self.refresh)
 
     def gossip(self, message):
         self.updates.append(message)
@@ -67,7 +71,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         print "WebSocket opened ..."
         sockets.append(self)
         if streamer is None:
-            streamer = TwitterStreamer(Publisher())
+            streamer = TwitterStreamer(Publisher(refresh = options.refresh))
             print "TwitterStreamer is running ..."
             streamer.run()
  
@@ -80,8 +84,8 @@ class TwitterStreamer(object):
         self.publisher = publisher
 
     def run(self):
-        publisher = self.publisher
-        set_interval(publisher.spread, options.refresh) 
+        publisher = self.publisher 
+        publisher.start()
 
         if options.debug:
             msg = ["Rosalind Elsie Franklin (25 July 1920 – 16 April 1958)[1] was a British biophysicist and X-ray crystallographer who made critical contributions to the understanding of the fine molecular structures of DNA, RNA, viruses, coal, and graphite."
