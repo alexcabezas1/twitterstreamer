@@ -1,0 +1,4 @@
+##README
+Para correr la aplicación debes ejecutar:
+
+`python app.py --port=80 --domain=localhost --refresh=3`
