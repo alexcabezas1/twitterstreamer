@@ -1,5 +1,5 @@
 ##README
 
-To run this application you execute the following:
+To run this application execute the following:
 
 python app.py --port=80 --domain=localhost --refresh=3`
